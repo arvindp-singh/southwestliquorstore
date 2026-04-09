@@ -20,7 +20,14 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -e
-            cd /srv/sites/southwestliquorstore.com
+            SITE_DIR="/srv/sites/southwestliquorstore.com"
+            REPO_URL="git@github.com:arvindp-singh/southwestliquorstore.git"
+            if [ ! -d "$SITE_DIR/.git" ]; then
+              echo "Directory not found, cloning repo..."
+              mkdir -p "$SITE_DIR"
+              git clone "$REPO_URL" "$SITE_DIR"
+            fi
+            cd "$SITE_DIR"
             git pull origin main
             npm ci --omit=dev
             npm run build
